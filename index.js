@@ -3,9 +3,11 @@ const mongoose = require('mongoose')
 const app = express()
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const path = require('path')
 
 app.use(cors())
-
+const directory = path.join(__dirname, '/statics/')
+app.use(express.static(directory))
 app.use(bodyParser.json({
     extended: true,
     limit: '20mb'
@@ -34,7 +36,6 @@ app.use('/lihatdata', require('./routes/lihatdata'))
 app.use('/mingguan', require('./routes/mingguan'))
 app.use('/user', require('./routes/login'))
 app.use('/akhir', require('./routes/akhir'))
-app.use('/evaluasimingguan', require('./routes/evaluasimingguan'))
 app.use('/kegiatanadmin', require('./routes/kegiatanadmin'))
 app.use('/kegiatanmahasiswa', require('./routes/kegiatanmahasiswa'))
 

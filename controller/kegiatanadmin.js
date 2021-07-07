@@ -4,18 +4,29 @@ const objekid = mongoose.Types.ObjectId
 
 exports.insert = (data) =>
   new Promise((resolve, reject) => {
-    kegiatanadmin.create(data)
-      .then(() => {
+    kegiatanadmin.findOne({
+      username: data.username
+    }).then(adaUser => {
+      if (adaUser) {
         resolve({
-          sukses: true,
-          massage: 'berhasil input data kegiatan'
-        })
-      }).catch(() => {
-        reject({
           sukses: false,
-          massage: 'gagal input data kegiatan'
+          massage:'username sudah terdaftar'
         })
-      })
+      } else {
+        kegiatanadmin.create(data)
+        .then(() => {
+          resolve({
+            sukses: true,
+            massage: 'berhasil input data kegiatan'
+          })
+        }).catch(() => {
+          reject({
+            sukses: false,
+            massage: 'gagal input data kegiatan'
+          })
+        })
+      }
+    })
   })
 
   exports.getAll = () =>

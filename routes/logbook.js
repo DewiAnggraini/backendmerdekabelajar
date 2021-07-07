@@ -29,4 +29,10 @@ router.delete('/delete/:_id', (req, res) => {
         .then(result => res.json(result))
         .catch(err => res.json(err))
 })
+
+router.get('/getbymhs/:npm', (req, res) => {
+    logbook.getlogbookbyMhs(req.params.npm)
+        .then(result => res.json(result))
+        .catch(err => res.json(err))
+})
 module.exports = router

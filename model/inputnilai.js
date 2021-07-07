@@ -5,14 +5,19 @@ const nilaiSchema = new Schema({
     NPM: {
         type: String
     },
-    Nama_mahasisawa: {
+    nama_kegiatan: {
         type: String
     },
-    jenis_nilai: { //free form= laporan dikonversi ke mata kuliah , blended form (structure form)= laporan dikoversi menjadi skills  
+    Nilai_skill: { //free form= laporan dikonversi ke mata kuliah , blended form (structure form)= laporan dikoversi menjadi skills  
         type: String
     },
-    N: {
+    Nilai_matakuliah: {
         type: String
-    }
+    },
+    image: [
+        {
+          filename: String
+        }
+      ]
 })
 module.exports = mongoose.model('nilai', nilaiSchema)
