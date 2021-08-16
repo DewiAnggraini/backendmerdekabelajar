@@ -1,4 +1,5 @@
 const nilaiModel = require('../model/inputnilai')
+const objekid = require('mongoose').Types.ObjectId
 
 exports.insertnilai = (data) =>
     new Promise((resolve, reject) => {
@@ -49,24 +50,49 @@ exports.editData = (npm, data) =>
             })
         })
     })
-exports.getById = (npm) =>
+    exports.getById = (id) =>
     new Promise((resolve, reject) => {
-        nilaiModel.findOne({
-            NPM: npm
-        }).then((res) => {
-            resolve({
-                sukses: true,
-                massage: 'berhasil menampilkan data',
-                data: res
-            })
+        // console.log(id)
+      nilaiModel.aggregate([
+        // {
+        //   $lookup: {
+        //     from: 'mingguans',
+        //     localField: 'NPM',
+        //     foreignField: 'NPM',
+        //     as: 'mingguan'
+        //   }
+        // },
+        // { $unwind: '$mingguan'},
+        {
+          $match: {
+            'NPM': id
+          }
+        },
+        {
+          $lookup: {
+            from: 'logins',
+            localField: 'NPM',
+            foreignField: 'username',
+            as: 'mhs'
+          }
+        },
+        { $unwind: '$mhs'}
+      ])
+        .then(res => {
+            // console.log(res)
+          resolve({
+            sukses: true,
+            massage: 'berhasil mnampilkan nilai',
+            data: res
+          })
         }).catch(() => {
-            reject({
-                sukses: false,
-                massage: 'gagal menampilkan data',
-                data: null
-            })
+          reject({
+            sukses: false,
+            massage: 'gagal menampilkan nilai',
+            data: []
+          })
         })
-    })
+      })
 
 exports.deletedata = (npm) =>
     new Promise((resolve, reject) => {

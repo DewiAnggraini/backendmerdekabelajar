@@ -40,8 +40,8 @@ router.delete('/delete/:_id', (req, res) => {
     .catch(err => res.json(err))
 })
 
-router.get('/getbydosen/:username', (req, res) => {
-  mingguan.getByDosen(req.params.username)
+router.get('/getbydosen/:username/:npm', (req, res) => {
+  mingguan.getByDosen(req.params.username, req.params.npm)
     .then(result => res.json(result))
     .catch(err => res.json(err))
 })

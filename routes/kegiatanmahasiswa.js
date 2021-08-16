@@ -13,6 +13,12 @@ router.get('/getdatakegiatan/:username', (req, res) => {
     .catch(err => res.json(err))
 })
 
+router.get('/getdatakegiatanconfirmed/:username', (req, res) => {
+  kegiatanmahasiswa.getKegiatanByDosenConfirmed(req.params.username)
+    .then(result => res.json(result))
+    .catch(err => res.json(err))
+})
+
 router.put('/konfirmasi/:id', (req, res) => {
   kegiatanmahasiswa.konfirmasiKegiatan(req.params.id)
     .then(result => res.json(result))

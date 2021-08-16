@@ -95,42 +95,20 @@ exports.insertlogbook = (data) =>
     })
 exports.getlogbookbyMhs = (npm) =>
 new Promise((resolve, reject) => {
-  logbook.aggregate([
-    {
-      $lookup: {
-        from: 'kegiatanadmins',
-        localField: 'NIDN_dosen',
-        foreignField: 'username',
-        as: 'kegiatanAdmin'
-      }
-    },
-    { $unwind: '$kegiatanAdmin' },
-    {
-      $lookup: {
-        from: 'kegiatanmahasiswas',
-        localField: 'kegiatanAdmin._id',
-        foreignField: 'id_kegiatan',
-        as: 'kegiatanMhs'
-      }
-    },
-    { $unwind: '$kegiatanMhs' },
-    {
-      $match: {
-        'kegiatanMhs.NPM': npm
-      }
-    }
-  ])
+  logbook.find({
+    NPM: npm
+  })
     .then((res) => {
       resolve({
         sukses: true,
-        massage: 'berhasil mmuat data logbook',
+        massage: 'berhasil memuat data logbook',
         data: res
       })
     }).catch((e) => {
       console.log(e)
       reject({
         sukses: false,
-        massage: 'gagal mmuat data logbook',
+        massage: 'gagal memuat data logbook',
         data: []
       })
     })

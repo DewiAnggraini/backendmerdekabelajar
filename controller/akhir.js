@@ -3,16 +3,7 @@ const objekid = require('mongoose').Types.ObjectId
 
 exports.insertakhir = (data) =>
     new Promise((resolve, reject) => {
-      try{
-        akhir.findOne({NPM: data.NPM})
-        .then((result) =>{
-          if (result){
-            resolve({
-              sukses: false,
-              massage: 'anda sudah input laporan akhir'
-            })
-          } else {
-            akhir.create(data)
+      akhir.create(data)
               .then(() => {
                 resolve({
                   sukses: true,
@@ -24,38 +15,39 @@ exports.insertakhir = (data) =>
                   massage: 'gagal input laporan akhir'
                 })
             })
-          }
-        })
-      }catch (e){
-        console.log(e)
-      }
-    })
-    exports.getById = (id) =>
+          })
+          
+    exports.getById = (username,npm) =>
     new Promise((resolve, reject) => {
       akhir.aggregate([
         {
-          $lookup: {
-            from: 'logbooks',
-            localField: 'id_logbook',
-            foreignField: '_id',
-            as: 'logbook'
+          $match: {
+            NPM: npm
           }
         },
-        { $unwind: '$logbook'},
+        {
+          $lookup: {
+            from: 'kegiatanmahasiswas',
+            localField: 'NPM',
+            foreignField: 'NPM',
+            as: 'kegiatanMhs'
+          }
+        },
+        { $unwind: '$kegiatanMhs'},
+        {
+          $lookup: {
+            from: 'kegiatanadmins',
+            localField: 'kegiatanMhs.id_kegiatan',
+            foreignField: '_id',
+            as: 'kegiatanDosen'
+          }
+        },
+        { $unwind: '$kegiatanDosen'},
         {
           $match: {
-            'logbook.NIDN_dosen': id
+            'kegiatanDosen.username': username
           }
-        },
-        {
-          $lookup: {
-            from: 'logins',
-            localField: 'NPM',
-            foreignField: 'username',
-            as: 'mhs'
-          }
-        },
-        { $unwind: '$mhs'}
+        }
       ])
         .then(res => {
           resolve({

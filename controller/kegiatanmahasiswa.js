@@ -30,7 +30,7 @@ exports.insert = (data) =>
       }
     })
   })
-  exports.getKegiatanByDosen = (username) =>
+exports.getKegiatanByDosen = (username) =>
   new Promise((resolve, reject) => {
       kegiatanadmin.aggregate([
         {
@@ -47,6 +47,55 @@ exports.insert = (data) =>
           }
         },
         { $unwind: '$mahasiswa' },
+        {
+          $lookup: {
+            from: 'logins',
+            localField: 'mahasiswa.NPM',
+            foreignField: 'username',
+            as: 'detailMahasiswa'
+          }
+        },
+        { $unwind: '$detailMahasiswa' },
+    ])
+          .then((res) => {
+              resolve({
+                  sukses: true,
+                  massage: 'berhasil menampilkan data kegiatan',
+                  data: res
+              })
+          }).catch((e) => {
+            console.log(e)
+              reject({
+                  sukses: false,
+                  massage: 'gagal menampilkan data kegiatan',
+                  data: []
+              })
+          })
+
+  })
+
+exports.getKegiatanByDosenConfirmed = (username) =>
+  new Promise((resolve, reject) => {
+      kegiatanadmin.aggregate([
+        {
+          $match: {
+            username: username
+          }
+        },
+        {
+          $lookup: {
+            from: 'kegiatanmahasiswas',
+            localField: '_id',
+            foreignField: 'id_kegiatan',
+            as: 'mahasiswa'
+          }
+        },
+        { $unwind: '$mahasiswa' },
+        {
+          $match: {
+            'mahasiswa.status': 1
+          }
+        },
         {
           $lookup: {
             from: 'logins',

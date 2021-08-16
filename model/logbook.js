@@ -5,6 +5,9 @@ const logbookSchema = new Schema({
     nama_kegiatan: {
         type: String
     },
+    NPM: {
+        type: String
+    },
     NIDN_dosen: {
         type: String
     },
